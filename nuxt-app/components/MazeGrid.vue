@@ -5,8 +5,8 @@
         <MazeSquare
             :active="cell"
             :center="isCenter(rowIndex, colIndex)"
-            :value="roomValues[rowIndex]?.[colIndex]"
             :enabled="isEnabled(rowIndex, colIndex)"
+            :value="roomValues[rowIndex]?.[colIndex]"
             @toggle="handleToggle(rowIndex, colIndex)"
         />
         <div
@@ -22,14 +22,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import MazeSquare from './MazeSquare.vue';
-import { useMaze } from '../composables/useMaze';
+import {useMaze} from '../composables/useMaze';
+
+const props = defineProps<{ locked?: boolean }>();
 
 const emit = defineEmits(['select-room']);
-const { grid, hConnections, vConnections, roomValues, isCenter, isEnabled, toggle, size } = useMaze(7);
+const {grid, hConnections, vConnections, roomValues, isCenter, isEnabled, toggle, size} = useMaze(7);
 
 async function handleToggle(row: number, col: number) {
+  if (props.locked) return;
   const enemy = await toggle(row, col);
   emit('select-room', {
     row,
@@ -49,22 +52,26 @@ async function handleToggle(row: number, col: number) {
   width: max-content;
   margin: 25vh auto;
 }
+
 .row {
   display: grid;
   grid-template-columns: repeat(7, 40px);
   gap: 8px;
 }
+
 .square-wrapper {
   position: relative;
   width: 40px;
   height: 40px;
 }
+
 .connector {
   position: absolute;
   background: #eee;
   z-index: 0;
   transition: background 0.2s;
 }
+
 .horizontal {
   top: 50%;
   right: -8px;
@@ -72,6 +79,7 @@ async function handleToggle(row: number, col: number) {
   height: 6px;
   transform: translateY(-50%);
 }
+
 .vertical {
   left: 50%;
   bottom: -8px;
@@ -79,6 +87,7 @@ async function handleToggle(row: number, col: number) {
   height: 8px;
   transform: translateX(-50%);
 }
+
 .open-connector {
   background: #4caf50;
 }
