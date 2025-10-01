@@ -44,7 +44,6 @@ async function handleToggle(row: number, col: number) {
 </script>
 
 <style scoped>
-/* MazeGrid.vue or global */
 .grid {
   display: grid;
   grid-template-rows: repeat(7, 40px);
