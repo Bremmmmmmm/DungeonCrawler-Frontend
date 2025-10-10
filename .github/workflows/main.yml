@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: Depcheck report
-          path: ${{ github.workspace }}/nuxt-app/reports
+          path: ${{ github.workspace }}/reports
 
       - name: Build the app
         working-directory: ./nuxt-app
