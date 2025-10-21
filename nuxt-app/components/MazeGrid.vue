@@ -24,23 +24,37 @@
 
 <script lang="ts" setup>
 import MazeSquare from './MazeSquare.vue';
-import {useMaze} from '../composables/useMaze';
 
-const props = defineProps<{ locked?: boolean }>();
+const props = defineProps<{ locked?: boolean; maze: ReturnType<typeof useMaze> }>();
+const emit = defineEmits(['select-room', 'all-visited']);
 
-const emit = defineEmits(['select-room']);
-const {grid, hConnections, vConnections, roomValues, isCenter, isEnabled, toggle, size} = useMaze(7);
+const {
+  grid,
+  hConnections,
+  vConnections,
+  roomValues,
+  isCenter,
+  isEnabled,
+  toggle,
+  size,
+  allVisited,
+  visited
+} = toRefs(props.maze);
 
 async function handleToggle(row: number, col: number) {
   if (props.locked) return;
-  const enemy = await toggle(row, col);
+  const enemy = await props.maze.toggle(row, col);
   emit('select-room', {
     row,
     col,
-    value: roomValues.value[row]?.[col],
+    value: props.maze.roomValues.value[row]?.[col],
     enemy
   });
 }
+
+watch(() => props.maze.allVisited.value, (val) => {
+  if (val) emit('all-visited');
+});
 </script>
 
 <style scoped>

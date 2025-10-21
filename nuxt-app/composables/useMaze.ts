@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 export function useMaze(size: number) {
+    const visited = ref(new Set<string>());
     const center = Math.floor(size / 2);
     const grid = ref<boolean[][]>(Array.from({ length: size }, (_, r) =>
         Array.from({ length: size }, (_, c) => r === center && c === center)
@@ -60,6 +61,7 @@ export function useMaze(size: number) {
     }
 
     async function toggle(row: number, col: number): Promise<any | null> {
+        visited.value.add(`${row},${col}`);
         if (!isEnabled(row, col)) return null;
         if (grid.value[row]) {
             grid.value[row][col] = true;
@@ -91,6 +93,8 @@ export function useMaze(size: number) {
         }
     }
 
+    const allVisited = computed(() => visited.value.size === (size * size - 1));
+
     onMounted(() => {
         fetchMaze();
     });
@@ -103,6 +107,9 @@ export function useMaze(size: number) {
         isCenter,
         isEnabled,
         toggle,
-        size
+        size,
+        allVisited,
+        visited,
+        fetchMaze
     };
 }
