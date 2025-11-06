@@ -14,8 +14,9 @@
       <img :alt="room.enemy.name" :src="room.enemy.sprite" class="enemy-image"/>
       <div>{{ room.enemy.name }} (ID: {{ room.enemy.id }})</div>
     </div>
-    <div v-else>
-      <!-- Other content -->
+    <div v-else-if="room?.item" class="item-container">
+      <img :alt="room.item.name" :src="room.item.sprite" class="item-image"/>
+      <div>{{ room.item.name }}</div>
     </div>
   </div>
 </template>
@@ -24,7 +25,7 @@
 import {ref, watch} from 'vue';
 import grassMp4 from '~~/assets/Grass_Animation.mp4';
 
-const props = defineProps<{ room: { row: number, col: number, value: string | null, enemy?: any } | null }>();
+const props = defineProps<{ room: { row: number, col: number, value: string | null, enemy?: any, item?: any} | null }>();
 const showMp4 = ref(false);
 const fadeActive = ref(false);
 const showEnemy = ref(false);
@@ -32,6 +33,7 @@ const showEnemy = ref(false);
 const emit = defineEmits(['lock-maze']);
 
 watch(() => props.room?.enemy, async (enemy) => {
+  console.log(props.room);
   if (enemy) {
     showEnemy.value = false;
     fadeActive.value = true;
@@ -90,6 +92,20 @@ function handleVideoEnded() {
 
 .enemy-image {
   width: 25%;
+  margin-top: 60px;
+}
+
+.item-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-image {
+  width: 10%;
   margin-top: 60px;
 }
 

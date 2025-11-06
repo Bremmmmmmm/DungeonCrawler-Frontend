@@ -43,16 +43,30 @@ const {
 
 async function handleToggle(row: number, col: number) {
   if (props.locked) return;
-  const enemy = await props.maze.toggle(row, col);
+
+  const result = await props.maze.toggle(row, col);
+  let type: any = props.maze.roomValues.value[row]?.[col];
+  let item: any = null;
+  let enemy: any = null;
+  if (result) {
+    // check the type of room and assign enemy or item accordingly
+    if (type === 'enemy') {
+      enemy = result;
+    } else if (type === 'item') {
+      item = result;
+    }
+  }
+  console.log('Selected room:', { row, col, enemy, item });
   emit('select-room', {
     row,
     col,
     value: props.maze.roomValues.value[row]?.[col],
-    enemy
+    enemy,
+    item
   });
 }
 
-watch(() => props.maze.allVisited.value, (val) => {
+watch(() => props.maze.allVisited?.value, (val) => {
   if (val) emit('all-visited');
 });
 </script>

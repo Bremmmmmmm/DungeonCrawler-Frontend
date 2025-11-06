@@ -74,6 +74,16 @@ export function useMaze(size: number) {
                     return null;
                 }
             }
+            else if (roomValues.value[row]?.[col] === 'item') {
+                try {
+                    const response = await axios.get('http://localhost:5195/MazeInteractable/GetItemInArea?areaId=1');
+                    return response.data;
+                }
+                catch (error) {
+                    console.error('Failed to fetch item:', error);
+                    return null;
+                }
+            }
         }
         return null;
     }
